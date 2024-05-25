@@ -1,42 +1,34 @@
 // src/pages/EditingForm.js
 import React from 'react';
-import { Form, Input, InputNumber, Button } from 'antd';
+import { Formik } from 'formik';
+import { Form } from 'antd';
 import CustomInput from './components/CustomInput.js';
 import CustomButton from './components/CustomButton';
 import '../../styles/global/GlobalForms.css';
 
+
 const EditingForm = () => {
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-  };
 
   return (
     <div className="form-container">
-      <h2>Editing Service Form</h2>
-      <Form
-        name="editing_form"
-        onFinish={onFinish}
+      <h2 className="text-3xl font-bold text-white mb-4">Drone Service Form</h2>
+      <Formik
+        initialValues={{ flightDuration: '', equipmentType: '' }}
+        onSubmit={(values, { setSubmitting }) => {
+          // handle form submission here
+          setSubmitting(false);
+        }}
       >
-        <Form.Item
-          label="Video Length"
-          name="videoLength"
-          rules={[{ required: true, message: 'Please input the video length!' }]}
-        >
-          <InputNumber min={1} />
-        </Form.Item>
-        <Form.Item
-          label="Editing Style"
-          name="editingStyle"
-          rules={[{ required: true, message: 'Please input the editing style!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+        {({ handleSubmit, isSubmitting }) => (
+          <Form onFinish={handleSubmit} className="custom-form">
+            <CustomInput label="Flight Duration" name="flightDuration" type="number" />
+            <CustomInput label="Equipment Type" name="equipmentType" type="text" />
+            <Form.Item>
+              <CustomButton text="Submit" htmlType="submit" disabled={isSubmitting} />
+            </Form.Item>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };
