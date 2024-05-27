@@ -13,6 +13,7 @@ import CrewForm from './pages/forms/CrewForm';
 import Footer from './components/Footer';
 import './styles/App.css';
 import './styles/global/Global.css';
+import { FormDataProvider } from './pages/forms/components/FormDataContext';
 
 function App() {
   return (
