@@ -1,6 +1,6 @@
 // src/pages/Register.js
 import React from 'react';
-import './GlobalForms.css';
+import '../styles/global/GlobalForms.css';
 
 const Register = () => {
   return (

@@ -1,18 +1,19 @@
-// src/App.js
+// App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import DroneForm from './pages/DroneForm';
-import VideographyForm from './pages/VideographyForm';
-import PhotographyForm from './pages/PhotographyForm';
-import EditingForm from './pages/EditingForm';
-import CrewForm from './pages/CrewForm';
+import DroneForm from './pages/forms/DroneForm';
+import VideographyForm from './pages/forms/VideographyForm';
+import PhotographyForm from './pages/forms/PhotographyForm';
+import EditingForm from './pages/forms/EditingForm';
+import CrewForm from './pages/forms/CrewForm';
 import Footer from './components/Footer';
-import './App.css';
-import './styles/global.css';
+import './styles/App.css';
+import './styles/global/Global.css';
+import { FormDataProvider } from './pages/forms/components/FormDataContext';
 
 function App() {
   return (
@@ -39,3 +40,4 @@ function App() {
 }
 
 export default App;
+

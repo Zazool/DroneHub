@@ -1,13 +1,15 @@
 // src/pages/Home.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './GlobalForms.css';
-import './Home.css';
+import '../styles/global/Global.css';
+import FormDataContext from './forms/components/FormDataContext';
+import '../styles/Home.css';
 
 const Home = () => {
+  const { updateFormData } = useContext(FormDataContext);
   const [criteria, setCriteria] = useState({ service: '', postcode: '' });
-  const [transition, setTransition] = useState(false);
   const navigate = useNavigate();
+  const [transition, setTransition] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,6 +18,8 @@ const Home = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Update the form data context with the criteria
+    updateFormData(criteria);
     setTransition(true);
     setTimeout(() => {
       switch (criteria.service.toLowerCase()) {

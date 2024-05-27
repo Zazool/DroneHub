@@ -1,7 +1,7 @@
 // src/components/Header.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Header.css';  // Correct import for Header.css
+import '../styles/Header.css';  // Correct import for Header.css
 
 const Header = () => {
   return (
@@ -19,3 +19,5 @@ const Header = () => {
 };
 
 export default Header;
+
+
