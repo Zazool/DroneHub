@@ -12,7 +12,7 @@
 .custom-form {
   width: 100%;
   max-width: 400px;
-  background: #333;
+  background: #0000001c;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
@@ -89,4 +89,58 @@
 
 .custom-form .ant-checkbox-checked + span {
   color: white !important;
+}
+
+.ant-input-number, 
+
+.ant-input-number-input {
+  background-color: #ffffff; /* Ensure background color matches */
+  color: #000000; /* Ensure text color matches */
+  border: none; /* Remove default border */
+  height: 38px; /* Ensure consistent height */
+}
+
+.ant-select {
+  width: 80px; /* Adjust width to fit your design */
+}
+
+.ant-select-selector {
+  background-color: #333; /* Ensure background color matches */
+  color: #fff; /* Ensure text color matches */
+  border: none; /* Remove default border */
+}
+
+.ant-select-selection-item {
+  color: #fff; /* Ensure text color matches */
+}
+
+p {
+  margin-bottom: 10px;
+  color: white;
+}
+
+.previous-button {
+  padding: 5px;
+}
+
+.next-button {
+  padding: 5px;
+}
+
+.ant-select-selector {
+  background-color: #444 !important;
+  color: white !important;
+}
+
+.ant-select-selection-item {
+  color: white !important;
+}
+
+.ant-select-dropdown {
+  background-color: White !important;
+  color: #444 !important;
+}
+
+.ant-select-item-option-content {
+  color: #444 !important;
 }

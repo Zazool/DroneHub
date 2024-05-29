@@ -1,12 +1,13 @@
 // src/components/Header.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Header.css';  // Correct import for Header.css
+import '../styles/Header.css';
+import DHLogoNoBG from '../Media/DHLogoNoBG.png';
 
 const Header = () => {
   return (
     <header className="header">
-      <h1>Drone Hub</h1>
+      <img src={DHLogoNoBG} alt="Drone Hub Logo" style={{ height: '50px' }} />
       <nav>
         <ul>
           <li><Link to="/">Home</Link></li>
@@ -19,5 +20,3 @@ const Header = () => {
 };
 
 export default Header;
-
-

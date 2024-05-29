@@ -3,7 +3,7 @@ import React from 'react';
 import { Formik } from 'formik';
 import { Form } from 'antd';
 import CustomInput from './components/CustomInput.js';
-import CustomButton from './components/CustomButton';
+import CustomButton from './components/CustomButton.js';
 import '../../styles/global/GlobalForms.css';
 
 
