@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-import { Input } from 'antd'; // Import the Input component
+import { Input } from 'antd';
 import '../styles/global/Global.css';
 import '../styles/Home.css';
-
 
 const options = [
   { value: 'Commercial', label: 'Commercial' },
@@ -23,23 +22,26 @@ const Home = () => {
   const [transition, setTransition] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setCriteria({ ...criteria, [name]: value });
-  };
+    setCriteria((prevCriteria) => ({ ...prevCriteria, [name]: value }));
+  }, []);
 
-  const handleServiceChange = (selectedOption) => {
-    setCriteria({ ...criteria, service: selectedOption ? selectedOption.value : '' });
-  };
+  const handleServiceChange = useCallback((selectedOption) => {
+    setCriteria((prevCriteria) => ({ ...prevCriteria, service: selectedOption ? selectedOption.value : '' }));
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     setTransition(true);
     setTimeout(() => {
-      navigate('/drone-form');
-    }, 1000); // Duration of the transition
-  };
+      navigate('/drone-form', { state: { criteria } });
+    }, 1000);
+  }, [navigate, criteria]);
 
+  const handleViewJobs = () => {
+    navigate('/jobs');
+  };
 
   return (
     <div className="home-container">
@@ -52,7 +54,7 @@ const Home = () => {
               options={options}
               value={criteria.service ? { value: criteria.service, label: criteria.service } : null}
               onChange={handleServiceChange}
-              placeholder="Mission Objective"
+              placeholder="Project Type"
               className="form-input select-input"
             />
             <input
@@ -71,7 +73,7 @@ const Home = () => {
                 name="otherService"
                 value={criteria.otherService}
                 onChange={handleChange}
-                placeholder="Describe your mission objective"
+                placeholder="Describe your Project type"
                 className="form-input description-input"
               />
             </div>
@@ -80,9 +82,10 @@ const Home = () => {
             <button type="submit" className="search-button">Search</button>
           </div>
         </form>
-        <div className="popular-services">
-          Certified UAV Operators.
+        <div>
+          <button onClick={handleViewJobs} className="view-jobs-button">View Jobs</button>
         </div>
+        <div className="popular-services">Certified UAV Operators.</div>
       </div>
     </div>
   );
