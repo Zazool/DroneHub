@@ -12,6 +12,7 @@
 .custom-form {
   width: 100%;
   max-width: 400px;
+  min-width: 20em;
   background: #0000001c;
   padding: 20px;
   border-radius: 10px;
@@ -143,4 +144,9 @@ p {
 
 .ant-select-item-option-content {
   color: #444 !important;
+}
+
+.login-button:hover {
+  background-color: #9c27b0;
+  color: white;
 }

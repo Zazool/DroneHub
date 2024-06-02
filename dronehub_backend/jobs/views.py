@@ -11,10 +11,12 @@ from .models import User, Job, Transaction
 from .serializers import UserSerializer, JobSerializer, TransactionSerializer
 import json
 
+# View to register a new user
 class RegisterUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+# Custom authentication token view
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
@@ -23,6 +25,7 @@ class CustomAuthToken(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key, 'user_id': user.pk, 'email': user.email, 'role': user.role})
 
+# View to list and create jobs
 class JobListCreateView(generics.ListCreateAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
@@ -31,6 +34,7 @@ class JobListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save()
 
+# View to handle job purchase details
 class PurchaseJobDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -39,6 +43,7 @@ class PurchaseJobDetailView(APIView):
         transaction = Transaction.objects.create(pilot=request.user, job=job)
         return Response(TransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
 
+# View to retrieve job details
 class JobDetailView(generics.RetrieveAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
@@ -48,6 +53,7 @@ class JobDetailView(generics.RetrieveAPIView):
         lookup_field_value = self.kwargs.get('job_id')
         return self.queryset.get(id=lookup_field_value)
 
+# Function-based view to create a job
 @csrf_exempt
 def create_job(request):
     if request.method == 'POST':
@@ -56,7 +62,7 @@ def create_job(request):
             
             # Create a new job instance with the received data
             job = Job(
-                title=data['eventType'],
+                title=data['title'],
                 description=data['otherService'],
                 date_commencing=data['dateCommencing'],
                 date_ending=data['dateEnding'],
@@ -68,9 +74,9 @@ def create_job(request):
                 other_equipment=data['otherEquipment'],
                 service=data['service'],
                 postcode=data['postcode'],
-                contact_email=data['email'],  # Directly use the provided email
-                contact_name=data['firstName'],  # Directly use the provided name
-                contact_phone=data['phone'],  # Directly use the provided phone
+                contact_email=data['email'],  
+                contact_name=data['firstName'],  
+                contact_phone=data['phone'],  
             )
             job.save()
 

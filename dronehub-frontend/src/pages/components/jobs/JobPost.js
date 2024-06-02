@@ -12,7 +12,6 @@ const JobForm = () => {
         email: 'liam-mead@live.co.uk',
         editingOptions: ['Basic Editing (Cutting, Cropping, Colour Correction)', 'Color Grading', 'Special Effects', 'Sound Editing'],
         equipment: ['Sound Recording (Mics)', 'Lighting', 'Camera', 'Gimble', 'FPV System', 'Other'],
-        eventDuration: 'Yes',
         firstName: 'Liam Mead',
         otherEquipment: 'This is a description of other equipment that might be needed',
         otherService: 'This is a project type description',

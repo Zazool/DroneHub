@@ -1,3 +1,4 @@
+// ./src/home.js
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
@@ -46,7 +47,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className={`content ${transition ? 'fade-out' : ''}`}>
-        <h2>Connect with a Drone operative</h2>
+        <h2>Connect with a Drone Pilot</h2>
         <p>Ready to take on your project</p>
         <form onSubmit={handleSubmit} className="search-form">
           <div className="input-row">

@@ -3,12 +3,13 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Checkbox, Form, Input, InputNumber, Select, Button, DatePicker } from 'antd';
 import '../../styles/global/GlobalForms.css';
-import axios from 'axios'; // Make sure to import axios
+import axios from 'axios'; 
 
+// Define the steps for the form wizard, each step has a title and a question
 const steps = [
   {
     title: 'UAS Operator Duration',
-    question: 'How long do you need a UAS (Unmanned Aircraft System) operator for?',
+    question: 'How long do you need a drone pilot for?',
   },
   {
     title: 'Describe the mission Objective',
@@ -19,7 +20,7 @@ const steps = [
     question: 'Additional equipment request?',
   },
   {
-    title: 'Event Duration',
+    title: 'Editing Needed',
     question: 'For video filming missions is editing required?',
   },
   {
@@ -29,25 +30,33 @@ const steps = [
 ];
 
 const DroneForm = () => {
+  // Get the location object from the router
   const location = useLocation();
+  // Extract criteria from the location state, default to an empty object if not present
   const { criteria } = location.state || { criteria: {} };
 
+  // State to keep track of the current step in the form wizard
   const [currentStep, setCurrentStep] = useState(0);
+  // State to keep track of the form values
   const [formValues, setFormValues] = useState({
-    operatorDuration: 1,
-    operatorDurationUnit: 'hours',
-    dateCommencing: null,
-    dateEnding: null,
-    eventType: '',
+    title: 'Untitled Job',
+    description: '',
+    date_commencing: null,
+    date_ending: null,
+    operator_duration: 1,
+    operator_duration_unit: 'hours',
+    editing_options: [],
     equipment: [],
-    eventDuration: '',
-    firstName: '',
-    email: '',
-    phone: '',
+    other_equipment: '',
+    service: 'Standard',
+    postcode: '',
+    contact_email: '',
+    contact_name: '',
+    contact_phone: '',
   });
 
+  // Effect to initialize form values with criteria from the Home form
   useEffect(() => {
-    // Initialize form values with criteria from Home form
     setFormValues((prevValues) => ({
       ...prevValues,
       service: criteria.service || '',
@@ -56,28 +65,36 @@ const DroneForm = () => {
     }));
   }, [criteria]);
 
+  // Create a form instance using Ant Design's Form hook
   const [form] = Form.useForm();
 
+  // Function to handle moving to the next step
   const handleNext = useCallback(async () => {
     try {
+      // Validate the current step's fields
       await form.validateFields();
+      // Move to the next step
       setCurrentStep((prevStep) => prevStep + 1);
     } catch (errorInfo) {
+      // Log validation errors
       console.log('Validation Failed:', errorInfo);
     }
   }, [form]);
 
+  // Function to handle moving to the previous step
   const handlePrev = useCallback(() => {
     setCurrentStep((prevStep) => prevStep - 1);
   }, []);
 
+  // Function to handle form submission
   const handleSubmit = useCallback(async () => {
     try {
+      // Validate all fields before submission
       await form.validateFields();
-      
       // Log the form values to verify the payload
       console.log('Form Values:', formValues);
-  
+
+      // Send a POST request to the backend to create a new job
       const response = await axios.post('http://localhost:8000/api/jobs/', formValues, {
         headers: {
           'Content-Type': 'application/json',
@@ -91,16 +108,20 @@ const DroneForm = () => {
   
       // Optionally, you can navigate to the job board or clear the form
       setFormValues({
-        operatorDuration: 1,
-        operatorDurationUnit: 'hours',
-        dateCommencing: null,
-        dateEnding: null,
-        eventType: '',
+        title: '',
+        description: '',
+        date_commencing: null,
+        date_ending: null,
+        operator_duration: 1,
+        operator_duration_unit: 'hours',
+        editing_options: [],
         equipment: [],
-        eventDuration: '',
-        firstName: '',
-        email: '',
-        phone: '',
+        other_equipment: '',
+        service: 'Standard',
+        postcode: '',
+        contact_email: '',
+        contact_name: '',
+        contact_phone: '',
       });
     } catch (error) {
       console.log('Request Failed:', error);
@@ -130,49 +151,65 @@ const DroneForm = () => {
     <div className="form-container">
       <h2>Drone - Mission Details</h2>
       <p>{steps[currentStep].question}</p>
-      <div className="custom-form">
+      <div className="custom-form"> 
+      
+      {/* Form Wrapper */}
         <Form form={form} initialValues={formValues} onValuesChange={(changedValues, allValues) => setFormValues(allValues)}>
           {currentStep === 0 && (
             <>
+            {/* Operator Duration */}
               <Form.Item
-                name="operatorDuration"
+                name="operator_duration"
                 rules={[{ required: true, message: 'Please input the duration for the UAS operator!' }]}
               >
                 <InputNumber
                   min={1}
                   addonAfter={
-                    <Select defaultValue="hours" onChange={(value) => setFormValues({ ...formValues, operatorDurationUnit: value })}>
+                    <Select defaultValue="hours" onChange={(value) => setFormValues({ ...formValues, operator_duration_unit: value })}>
                       <Select.Option value="hours">Hours</Select.Option>
                       <Select.Option value="days">Days</Select.Option>
                     </Select>
                   }
-                  onChange={(value) => setFormValues({ ...formValues, operatorDuration: value })}
+                  onChange={(value) => setFormValues({ ...formValues, operator_duration: value })}
                 />
               </Form.Item>
+
+              {/* Date Commencing */}
+              <p>Start Date</p>
               <Form.Item
-                name="dateCommencing"
+                name="date_commencing"
                 rules={[{ required: true, message: 'Please select the date commencing!' }]}
               >
-                <DatePicker onChange={(date, dateString) => setFormValues({ ...formValues, dateCommencing: dateString })} />
+                <DatePicker onChange={(date, dateString) => setFormValues({ ...formValues, date_commencing: dateString })} />
               </Form.Item>
+              {/* Date Ending */}
+              <p>End Date</p>
               <Form.Item
-                name="dateEnding"
+                name="date_ending"
                 rules={[{ required: true, message: 'Please select the date ending!' }]}
               >
-                <DatePicker onChange={(date, dateString) => setFormValues({ ...formValues, dateEnding: dateString })} />
+                <DatePicker onChange={(date, dateString) => setFormValues({ ...formValues, date_ending: dateString })} />
               </Form.Item>
             </>
           )}
+
+
+          {/* Mission Description */}
           {currentStep === 1 && (
+            
             <Form.Item
-              name="eventType"
+              name="description"
               rules={[{ required: true, message: 'Please input the Mission Description!' }]}
             >
-              <Input.TextArea rows={4} autoSize={{ minRows: 4, maxRows: 10 }} onChange={(e) => setFormValues({ ...formValues, eventType: e.target.value })} />
+              <Input.TextArea rows={4} placeholder="Please input the Mission Description!" autoSize={{ minRows: 4, maxRows: 10 }} onChange={(e) => setFormValues({ ...formValues, description: e.target.value })} />
             </Form.Item>
           )}
+          
+
           {currentStep === 2 && (
             <>
+
+            {/* equipment required */}
               <Form.Item
                 name="equipment"
                 rules={[{ required: true, message: 'Please select the equipment needed!' }]}
@@ -182,56 +219,77 @@ const DroneForm = () => {
                   onChange={(checkedValues) => setFormValues({ ...formValues, equipment: checkedValues })}
                 />
               </Form.Item>
+
+              {/* Other Equipment Text Field displayed if Other is selected */}
               {formValues.equipment.includes('Other') && (
                 <Form.Item
-                  name="otherEquipment"
+                  name="other_equipment"
                   rules={[{ required: true, message: 'Please describe the other equipment needed!' }]}
                 >
-                  <Input.TextArea rows={4} placeholder="Please describe the other equipment needed" onChange={(e) => setFormValues({ ...formValues, otherEquipment: e.target.value })} />
+                  <Input.TextArea rows={4} placeholder="Please describe the other equipment needed" 
+                  onChange={(e) => setFormValues({ ...formValues, other_equipment: e.target.value })} />
                 </Form.Item>
               )}
             </>
           )}
+
           {currentStep === 3 && (
             <>
+
+              {/* Editing required Yes or No*/}
               <Form.Item
-                name="eventDuration"
-                rules={[{ required: true, message: 'Please select the event duration!' }]}
-              >
-                <Select onChange={(value) => setFormValues({ ...formValues, eventDuration: value })}>
+                name="editing_options"
+                rules={[{ required: true, message: 'Please select the editing required' }]}>
+                <Select
+                  value={formValues.editing_options} // Bind to state
+                  onChange={(value) => setFormValues({ ...formValues, editing_options: value })}
+                >
                   <Select.Option value="Yes">Yes</Select.Option>
                   <Select.Option value="No">No</Select.Option>
                 </Select>
+
+              {/* Editing options if 'Yes' Selected */}
               </Form.Item>
-              {formValues.eventDuration === 'Yes' && (
+              {formValues.editing_options === 'Yes' && (
                 <Form.Item
-                  name="editingOptions"
+                  name="editing_options_details"
                   rules={[{ required: true, message: 'Please select the editing options needed!' }]}
                 >
                   <Checkbox.Group
-                    options={['Basic Editing (Cutting, Cropping, Colour Correction)', 'Color Grading', 'Special Effects', 'Sound Editing']}
-                    onChange={(checkedValues) => setFormValues({ ...formValues, editingOptions: checkedValues })}
+                    options={['Basic Editing (Cutting, Cropping, Colour Correction)', 'Color Grading', 'Special Effects', 'Sound Editing', 'Other']}
+                    onChange={(checkedValues) => setFormValues({ ...formValues, editing_options_details: checkedValues })}
                   />
+               </Form.Item>
+              )} 
+
+              {/* Other Editing Text Field displayed if Other is selected */}             
+              {formValues.editing_options.includes('Other') && (
+                <Form.Item
+                  name="other_editing"
+                  rules={[{ required: true, message: 'Please describe the other editing needed.' }]}
+                >
+                  <Input.TextArea rows={4} placeholder="Please describe the other editing needed." 
+                  onChange={(e) => setFormValues({ ...formValues, other_editing: e.target.value })} />
                 </Form.Item>
               )}
-            </>
+            </> 
           )}
           {currentStep === 4 && (
             <>
               <Form.Item
-                name="firstName"
+                name="contact_name"
                 rules={[{ required: true, message: 'Please input your name!' }]}
               >
-                <Input placeholder="Name" autoComplete="name" onChange={(e) => setFormValues({ ...formValues, firstName: e.target.value })} />
+                <Input placeholder="Name" autoComplete="name" onChange={(e) => setFormValues({ ...formValues, contact_name: e.target.value })} />
               </Form.Item>
               <Form.Item
-                name="email"
+                name="contact_email"
                 rules={[{ type: 'email', required: true, message: 'Invalid email address!' }]}
               >
-                <Input placeholder="Email Address" autoComplete="email" onChange={(e) => setFormValues({ ...formValues, email: e.target.value })} />
+                <Input placeholder="Email Address" autoComplete="email" onChange={(e) => setFormValues({ ...formValues, contact_email: e.target.value })} />
               </Form.Item>
               <Form.Item
-                name="phone"
+                name="contact_phone"
                 rules={[
                   { 
                     pattern: /^\d{4}[\s.-]?\d{3}[\s.-]?\d{4}$/,
@@ -240,7 +298,8 @@ const DroneForm = () => {
                   }
                 ]}
               >
-                <Input placeholder="Phone Number" autoComplete="tel-national" inputMode="tel" onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })} />
+                
+                <Input placeholder="Phone Number" autoComplete="tel-national" inputMode="tel" onChange={(e) => setFormValues({ ...formValues, contact_phone: e.target.value })} />
               </Form.Item>
             </>
           )}
@@ -256,3 +315,5 @@ const DroneForm = () => {
 }
 
 export default DroneForm;
+
+
